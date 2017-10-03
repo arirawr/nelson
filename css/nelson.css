@@ -1,0 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
+.nelson {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.nelson > div {
+  border-radius: 10px;
+}
+
+.nelson .head {
+  height: 250px;
+  width: 350px;
+  font: monospace;
+  font-size: 100px;
+  line-height: 170px;
+  color: white;
+  text-align: center;
+  border: 40px solid mediumpurple;
+  margin-bottom: -30px;
+  z-index: 1;
+}
+
+.nelson .body {
+  width: 60%;
+  height: 70%;
+}
+
+#genres-list {
+  text-align: center;
+}
+
+#genres-list .btn {
+  margin: 5px 0;
+  
+}
+

@@ -1,0 +1,235 @@
+<html>
+  <head>
+    <title>Nelson | Spotify Robot Jukebox</title>
+    <link href="https://sp-bootstrap.global.ssl.fastly.net/8.0.0/sp-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/nelson.css"/>
+    <link rel="stylesheet" href="css/interface.css">
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://sp-bootstrap.global.ssl.fastly.net/8.0.0/sp-bootstrap.js"></script>
+  </head>
+  <body>
+    <div class="nelson">
+      <!-- <div class="head">:)</div> -->
+      <div class="body bg-salmon">
+        <button class="btn btn-aubergine btn-lg" data-toggle="modal" data-target="#genre-select">
+          Genres
+        </button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="genre-select">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Select seed genres</h4>
+          </div>
+          <div class="modal-body">
+            <div id="genreLimitAlert" class="alert alert-danger alert-dismissible" role="alert" style="display:none;">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              Oops! You can only select up to 5 genres.
+            </div>
+            <div id="genres-list" data-toggle="buttons">
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="acoustic"> Acoustic
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="afrobeat"> Afrobeat
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="alt-rock"> Alt Rock
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="alternative"> Alternative
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="ambient"> Ambient
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="anime"> Anime
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="black-metal"> Black Metal
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="blues"> Blues
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="bossanova"> Bossanova
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="brazil"> Brazil
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="breakbeat"> Breakbeat
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="british"> British
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="cantopop"> Cantopop
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="chicago-house"> Chicago House
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="children"> Children
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="chill"> Chill
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="classical"> Classical
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="club"> Club
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="comedy"> Comedy
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="country"> Country
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="dance"> Dance
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="dancehall"> Dancehall
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="death-metal"> Death Metal
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="deep-house"> Deep House
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="detroit-techno"> Detroit Techno
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="disco"> Disco
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="disney"> Disney
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="drum-and-bass"> Drum and Bass
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="dub"> Dub
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="dubstep"> Dubstep
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="edm"> EDM
+              </label>
+              <label class="btn btn-salmon btn-sm">
+                <input type="checkbox" value="electro"> Electro
+              </label>
+
+              <!-- "electronic",
+              "emo",
+              "folk",
+              "forro",
+              "french",
+              "funk",
+              "garage",
+              "german",
+              "gospel",
+              "goth",
+              "grindcore",
+              "groove",
+              "grunge",
+              "guitar",
+              "happy",
+              "hard-rock",
+              "hardcore",
+              "hardstyle",
+              "heavy-metal",
+              "hip-hop",
+              "holidays",
+              "honky-tonk",
+              "house",
+              "idm",
+              "indian",
+              "indie",
+              "indie-pop",
+              "industrial",
+              "iranian",
+              "j-dance",
+              "j-idol",
+              "j-pop",
+              "j-rock",
+              "jazz",
+              "k-pop",
+              "kids",
+              "latin",
+              "latino",
+              "malay",
+              "mandopop",
+              "metal",
+              "metal-misc",
+              "metalcore",
+              "minimal-techno",
+              "movies",
+              "mpb",
+              "new-age",
+              "new-release",
+              "opera",
+              "pagode",
+              "party",
+              "philippines-opm",
+              "piano",
+              "pop",
+              "pop-film",
+              "post-dubstep",
+              "power-pop",
+              "progressive-house",
+              "psych-rock",
+              "punk",
+              "punk-rock",
+              "r-n-b",
+              "rainy-day",
+              "reggae",
+              "reggaeton",
+              "road-trip",
+              "rock",
+              "rock-n-roll",
+              "rockabilly",
+              "romance",
+              "sad",
+              "salsa",
+              "samba",
+              "sertanejo",
+              "show-tunes",
+              "singer-songwriter",
+              "ska",
+              "sleep",
+              "songwriter",
+              "soul",
+              "soundtracks",
+              "spanish",
+              "study",
+              "summer",
+              "swedish",
+              "synth-pop",
+              "tango",
+              "techno",
+              "trance",
+              "trip-hop",
+              "turkish",
+              "work-out",
+              "world-music" -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-stroked-dark" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-aubergine">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="./client.js"></script>
+  </body>
+</html>
