@@ -1,7 +1,7 @@
 {
   "name": "nelson",
   "version": "1.0.0",
-  "description": "A friendly in-browser Spotify robot jukebox",
+  "description": "Spotify recommendations jukebox",
   "main": "server.js",
   "dependencies": {
     "express": "^4.15.4",
@@ -15,12 +15,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@ghe.spotify.net:arielle/nelson.git"
+    "url": "git@github.com:arirawr/nelson.git"
   },
   "keywords": [
-    "node",
     "spotify",
-    "music"
+    "music",
+    "recommendations"
   ],
   "author": "Arielle Vaniderstine",
   "license": "ISC"

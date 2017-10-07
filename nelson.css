@@ -1,0 +1,107 @@
+/* aubergine: #503750 */
+/* salmon: #f573a0 */
+
+* {
+  box-sizing: border-box;
+}
+
+.inline * {
+  display: inline-block;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #f573a0;
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+/* Sliders */
+
+.ui-widget-header {
+  background: #503750;
+  border: none;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+  border: 2px solid #503750;
+  background: #f573a0;
+  outline: none;
+  cursor: pointer;
+  border-radius: 1.2em;
+}
+
+.ui-widget.ui-widget-content {
+  border: 1px solid #503750;
+}
+
+.radio input[type="radio"]:checked ~ .control-indicator,
+.radio input[type="radio"]:checked:active ~ .control-indicator,
+.radio input[type="radio"]:checked:focus ~ .control-indicator,
+.radio-inline input[type="radio"]:checked ~ .control-indicator,
+.radio-inline input[type="radio"]:checked:active ~ .control-indicator,
+.radio-inline input[type="radio"]:checked:focus ~ .control-indicator,
+.checkbox input[type="checkbox"]:checked ~ .control-indicator,
+.checkbox input[type="checkbox"]:checked:active ~ .control-indicator,
+.checkbox input[type="checkbox"]:checked:focus ~ .control-indicator,
+.checkbox-inline input[type="checkbox"]:checked ~ .control-indicator,
+.checkbox-inline input[type="checkbox"]:checked:active ~ .control-indicator,
+.checkbox-inline input[type="checkbox"]:checked:focus ~ .control-indicator {
+  background-color: #f573a0;
+  border-color: #f573a0;
+}
+
+#notice {
+  width: 80%;
+}
+
+.nelson {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  margin: 2vw;
+}
+
+.nelson > div {
+  border-radius: 10px;
+}
+
+.nelson .body {
+  width: 80%;
+  padding: 30px;
+  border: 1px #ccc solid;
+}
+
+.modal-dialog {
+  width: 80%;
+}
+
+#genres-list {
+  text-align: center;
+}
+
+#genres-list .btn {
+  margin: 5px;  
+}
+
+#tracks {
+  width: 80%;
+  height: 30%;
+  overflow-y: scroll;
+  border: 1px #ccc solid;
+  padding: 20px;
+}
+
+.track-element {
+  display: flex;
+  flex-direction: row;
+}
+
+.track-element img {
+  width: 100;
+  height: 100;
+  margin: 20px;
+}

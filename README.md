@@ -1,2 +1,2 @@
 # nelson
-Your friendly in-browser robot jukebox
+Spotify recommendations jukebox
