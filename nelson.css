@@ -98,10 +98,16 @@
 .track-element {
   display: flex;
   flex-direction: row;
+  cursor: pointer;
+  padding: 20px 0;
+}
+
+.track-element:hover {
+  background-color: #eee;
 }
 
 .track-element img {
   width: 100;
   height: 100;
-  margin: 20px;
+  margin: 0 20px;
 }

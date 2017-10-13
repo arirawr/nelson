@@ -232,7 +232,7 @@ function renderTracks(ids) {
   $.get('/tracks?ids=' + ids.join() + '&token=' + _token, function(tracks) {
     tracks.forEach(function(track) {
       let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
-      let trackElement = '<div class="track-element"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div>';
+      let trackElement = '<div class="track-element" onclick="play(\'' + track.uri + '\');"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div>';
       $('#tracks').append(trackElement);
     })
   });
@@ -243,4 +243,8 @@ function makePlaylist() {
     $.post('/playlist?tracks=' + localStorage.getItem('currentNelsonTracks') + '&genres=' + localStorage.getItem('currentNelsonGenres')+ '&features=' + localStorage.getItem('currentNelsonFeatures') + '&token=' + _token);
     $('#notice').html('<div class="alert alert-success alert-dismissable" role="alert"><b>Sweet!</b> You just created a new Spotify playlist with recommendations from Nelson.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
   }
+}
+
+function play(track) {
+  $.post('/play?tracks=' + track + '&token=' + _token);
 }
