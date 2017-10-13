@@ -1,36 +1,3 @@
-const hash = window.location.hash
-.substring(1)
-.split('&')
-.reduce(function (initial, item) {
-  if (item) {
-    var parts = item.split('=');
-    initial[parts[0]] = decodeURIComponent(parts[1]);
-  }
-  return initial;
-}, {});
-window.location.hash = '';
-
-// Set token
-let _token = hash.access_token;
-
-const authEndpoint = 'https://accounts.spotify.com/authorize';
-
-// Replace with your app's client ID, redirect URI and desired scopes
-const clientId = '593219e3509a40e499f266c2c4fd6f5c';
-const redirectUri = 'http://localhost:8888/';
-const scopes = [
-  'user-read-birthdate',
-  'user-read-email',
-  'user-read-private',
-  'playlist-modify-public',
-  'user-modify-playback-state'
-];
-
-// If there is no token, redirect to Spotify authorization
-if (!_token) {
-  window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token`;
-}
-
 genreLimitAlert("off");
 setUpSliders();
 
@@ -48,7 +15,7 @@ function setUpSliders() {
     min: 0,
     max: 1,
     step: 0.01,
-    values: [ 0, 1 ],
+    values: [0, 1],
     stop: function() {
       getRecommendations()
     }
@@ -67,7 +34,7 @@ function setUpSliders() {
     min: 0,
     max: 100,
     step: 1,
-    values: [ 0, 100 ],
+    values: [0, 100],
     stop: function() {
       getRecommendations()
     }
@@ -78,7 +45,7 @@ function setUpSliders() {
     min: 40,
     max: 200,
     step: 1,
-    values: [ 40, 200 ],
+    values: [40, 200],
     stop: function() {
       getRecommendations()
     }
@@ -232,7 +199,7 @@ function renderTracks(ids) {
   $.get('/tracks?ids=' + ids.join() + '&token=' + _token, function(tracks) {
     tracks.forEach(function(track) {
       let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
-      let trackElement = '<div class="track-element" onclick="play(\'' + track.uri + '\');"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div>';
+      let trackElement = '<div class="track-element" onclick="play(\'' + track.uri + '\');"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div><img width="30" src="./images/remove-icon.png" onclick="remove(\'' + track.uri + '\');"/></div>';
       $('#tracks').append(trackElement);
     })
   });

@@ -8,6 +8,78 @@
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://sp-bootstrap.global.ssl.fastly.net/8.0.0/sp-bootstrap.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+      const hash = window.location.hash
+      .substring(1)
+      .split('&')
+      .reduce(function (initial, item) {
+        if (item) {
+          var parts = item.split('=');
+          initial[parts[0]] = decodeURIComponent(parts[1]);
+        }
+        return initial;
+      }, {});
+      window.location.hash = '';
+
+      // Set token
+      let _token = hash.access_token;
+
+      const authEndpoint = 'https://accounts.spotify.com/authorize';
+
+      // Replace with your app's client ID, redirect URI and desired scopes
+      const clientId = '593219e3509a40e499f266c2c4fd6f5c';
+      const redirectUri = 'http://localhost:8888/';
+      const scopes = [
+        'streaming',
+        'user-read-birthdate',
+        'user-read-email',
+        'user-read-private',
+        'playlist-modify-public',
+        'user-modify-playback-state'
+      ];
+
+      let player;
+
+      // If there is no token, redirect to Spotify authorization
+      if (!_token) {
+        window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token`;
+      }
+    
+      function onSpotifyPlayerAPIReady() {
+        
+        player = new Spotify.Player({
+          name: 'Nelson',
+          getOAuthToken: function(cb) {
+            cb(_token)
+          },
+          volume: 0.8
+        });
+
+        console.log(player._options.name)
+      
+        player.on('ready', function (data) {
+          console.log("Ready");
+          console.log("Player Name", player._options.name);
+          console.log("Device ID", data.device_id);
+        });
+      
+        player.on('initialization_failed', function (e) {
+          console.log('Initialization Failed', e);
+        });
+        player.on('authentication_error', function (e) {
+          console.log('Authentication Error', e);
+        });
+        player.on('account_error', function (e) {
+          console.log('Account Error', e);
+        });
+        player.on('playback_error', function (e) {
+          console.log('Playback Error', e);
+        });
+      
+        player.connect();
+      }
+    </script>
   </head>
   <body>
     <div class="nelson">
