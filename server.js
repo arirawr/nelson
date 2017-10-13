@@ -50,12 +50,16 @@ app.get('/recommendations', function(req, res) {
   });
 });
 
-app.get('/track', function(req, res) {
+app.get('/tracks', function(req, res) {
 
-  let id = req.query.id;
+  let ids = req.query.ids;
   let token = req.query.token;
 
-  let requestURL = spotifyBaseUrl + 'tracks/' + id;
+  let requestURL = spotifyBaseUrl + 'tracks?' + 
+  querystring.stringify({
+    ids: ids,
+    market: 'from_token'
+  });
 
   let options = {
     url: requestURL,
@@ -64,7 +68,8 @@ app.get('/track', function(req, res) {
   };
 
   request.get(options, function(error, response, body) {
-    res.json(body);
+    res.json(body.tracks);
+    console.log(body)
   });
 });
 

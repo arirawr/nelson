@@ -17,7 +17,7 @@ const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 // Replace with your app's client ID, redirect URI and desired scopes
 const clientId = '593219e3509a40e499f266c2c4fd6f5c';
-const redirectUri = 'https://nelson.glitch.me/';
+const redirectUri = 'http://localhost:8888/';
 const scopes = [
   'user-read-birthdate',
   'user-read-email',
@@ -211,14 +211,16 @@ function getRecommendations() {
   // Send the request
   $.get('/recommendations?seed_genres=' + genresString + '&' + $.param(audioFeatures) + '&token=' + _token, function(data) {
     $('#tracks').empty();
-    let currentNelsonTracks = [];
+    let trackIds = [];
+    let trackUris = [];
     if(data.tracks) {
       data.tracks.forEach(function(track) {
-        renderTrack(track.id);
-        currentNelsonTracks.push(track.uri);
+        trackIds.push(track.id);
+        trackUris.push(track.uri);
       });
-      localStorage.setItem('currentNelsonTracks', currentNelsonTracks.join());
-      $.post('/play?tracks=' + currentNelsonTracks.join() + '&token=' + _token);
+      localStorage.setItem('currentNelsonTracks', trackUris.join());
+      renderTracks(trackIds);
+      $.post('/play?tracks=' + trackUris.join() + '&token=' + _token);
     }
     else {
       $('#tracks').append('<h2>No results.</h2>')
@@ -226,11 +228,13 @@ function getRecommendations() {
   });
 }
 
-function renderTrack(id) {
-  $.get('/track?id=' + id + '&token=' + _token, function(track) {
-    let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
-    let trackElement = '<div class="track-element"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div>';
-    $('#tracks').append(trackElement);
+function renderTracks(ids) {
+  $.get('/tracks?ids=' + ids.join() + '&token=' + _token, function(tracks) {
+    tracks.forEach(function(track) {
+      let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
+      let trackElement = '<div class="track-element"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div>';
+      $('#tracks').append(trackElement);
+    })
   });
 }
 
