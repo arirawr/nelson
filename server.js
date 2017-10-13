@@ -45,7 +45,6 @@ app.get('/recommendations', function(req, res) {
   };
 
   request.get(options, function(error, response, body) {
-    console.log(response.toJSON());
     res.json(body);
   });
 });
@@ -69,7 +68,6 @@ app.get('/tracks', function(req, res) {
 
   request.get(options, function(error, response, body) {
     res.json(body.tracks);
-    console.log(body)
   });
 });
 
@@ -95,7 +93,6 @@ app.post('/playlist', function(req, res) {
     
     // 2. Create playlist
     requestURL = spotifyBaseUrl + 'users/' + userId + '/playlists';
-    console.log(requestURL)
 
     options = {
       url: requestURL,
@@ -106,7 +103,6 @@ app.post('/playlist', function(req, res) {
     };
 
     request.post(options, function(error, response, body) {
-      console.log(body)
       playlistUrl = body.tracks.href;
       
       // 3. Add tracks to playlist
@@ -114,7 +110,6 @@ app.post('/playlist', function(req, res) {
       querystring.stringify({
         uris: tracks
       });
-      console.log(requestURL)
 
       options = {
         url: requestURL,
