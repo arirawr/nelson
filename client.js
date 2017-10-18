@@ -1,5 +1,66 @@
+const hash = window.location.hash
+.substring(1)
+.split('&')
+.reduce(function (initial, item) {
+  if (item) {
+    var parts = item.split('=');
+    initial[parts[0]] = decodeURIComponent(parts[1]);
+  }
+  return initial;
+}, {});
+window.location.hash = '';
+
+// Set token
+let _token = hash.access_token;
+
+const authEndpoint = 'https://accounts.spotify.com/authorize';
+
+// Replace with your app's client ID, redirect URI and desired scopes
+const clientId = '593219e3509a40e499f266c2c4fd6f5c';
+const redirectUri = 'http://localhost:8888/';
+const scopes = [
+  'streaming',
+  'user-read-birthdate',
+  'user-read-email',
+  'user-read-private',
+  'playlist-modify-public',
+  'user-modify-playback-state'
+];
+
+// If there is no token, redirect to Spotify authorization
+if (!_token) {
+  window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token`;
+}
+
 genreLimitAlert("off");
 setUpSliders();
+
+let deviceId;
+
+function onSpotifyPlayerAPIReady() {
+  
+  let player = new Spotify.Player({
+    name: 'Nelson',
+    getOAuthToken: function(cb) {
+      cb(_token)
+    },
+    volume: 0.8
+  });
+
+  console.log(player._options.name)
+
+  player.on('ready', function(data) {
+    deviceId = data.device_id;
+  });
+
+  player.on('player_state_changed', function(data) {
+    let currentTrack = data.track_window.current_track.uri;
+    console.log(currentTrack)
+    updateCurrentlyPlaying(currentTrack);
+  });
+
+  player.connect();
+}
 
 function genreLimitAlert(state) {
   if(state == "on") {
@@ -187,7 +248,7 @@ function getRecommendations() {
       });
       localStorage.setItem('currentNelsonTracks', trackUris.join());
       renderTracks(trackIds);
-      $.post('/play?tracks=' + trackUris.join() + '&token=' + _token);
+      play(trackUris.join());
     }
     else {
       $('#tracks').append('<h2>No results.</h2>')
@@ -199,10 +260,17 @@ function renderTracks(ids) {
   $.get('/tracks?ids=' + ids.join() + '&token=' + _token, function(tracks) {
     tracks.forEach(function(track) {
       let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
-      let trackElement = '<div class="track-element" onclick="play(\'' + track.uri + '\');"><img src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div><img width="30" src="./images/remove-icon.png" onclick="remove(\'' + track.uri + '\');"/></div>';
+      let trackElement = '<div class="track-element" id="' + track.uri + '" onclick="play(\'' + track.uri + '\');"><div><img class="album-art" src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div><img class="remove-icon" src="./images/remove-icon.png" onclick="remove(\'' + track.uri + '\');"/></div>';
       $('#tracks').append(trackElement);
     })
   });
+}
+
+function updateCurrentlyPlaying(track) {
+  $('.track-element').removeClass('current-track');
+  if(document.getElementById(track)) {
+    document.getElementById(track).className += " current-track";
+  }
 }
 
 function makePlaylist() {
@@ -213,5 +281,16 @@ function makePlaylist() {
 }
 
 function play(track) {
-  $.post('/play?tracks=' + track + '&token=' + _token);
+  $.post('/play?tracks=' + track + '&device_id=' + deviceId + '&token=' + _token);
+}
+
+function remove(track) {
+  console.log("remove")
+  let trackList = localStorage.getItem('currentNelsonTracks').split(',');
+  trackList = trackList.filter(item => item != track);
+  localStorage.setItem('currentNelsonTracks', trackList.join());
+  let elementId = '#' + track;
+  var element = document.getElementById(track);
+  element.outerHTML = "";
+  delete element;
 }

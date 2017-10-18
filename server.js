@@ -126,9 +126,13 @@ app.post('/playlist', function(req, res) {
 
 app.post('/play', function(req, res) {
   let tracks = req.query.tracks;
+  let device_id = req.query.device_id;
   let token = req.query.token;
 
-  let requestURL = spotifyBaseUrl + 'me/player/play';
+  let requestURL = spotifyBaseUrl + 'me/player/play?' +
+  querystring.stringify({
+    device_id: device_id
+  });
 
   let options = {
     url: requestURL,

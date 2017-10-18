@@ -98,16 +98,40 @@
 .track-element {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   cursor: pointer;
   padding: 20px 0;
+}
+
+.track-element > div {
+  display: inherit;
 }
 
 .track-element:hover {
   background-color: #eee;
 }
 
-.track-element img {
+.current-track {
+  background-color: #f573a0;
+}
+
+.current-track a {
+  color: white;
+}
+
+.current-track:hover {
+  background-color: #f573a0;
+}
+
+.album-art {
   width: 100;
   height: 100;
   margin: 0 20px;
+}
+
+.remove-icon {
+  width: 30px;
+  height: 30px;
+  align-self: center;
+  margin: 20px;
 }
