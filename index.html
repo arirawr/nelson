@@ -12,13 +12,52 @@
   </head>
   <body>
     <div class="nelson">
+      <div class="alert alert-info" role="alert">Like the project? It uses the Spotify <a href="https://beta.developer.spotify.com/documentation/web-api/reference/browse/get-recommendations/">Recommendations API</a> and <a href="https://beta.developer.spotify.com/documentation/web-playback-sdk/">Web Playback SDK</a>. Try it yourself!</div>
       <div id="notice"></div>
+      
       <div class="body">
-        <button class="btn btn-aubergine btn-lg" onclick="makePlaylist();">Make Playlist</button>
-        <div class="inline">
+        <button class="btn btn-aubergine btn-lg space-after" onclick="makePlaylist();">Make Playlist</button>
+        
+        <span class="pull-right">
+          <span>Logged in as <span id="current-user"></span></span>
+          <button class="btn btn-secondary btn-sm" onclick="logout();">Logout</button>
+        </span>
+        
+        <div class="inline space-after">
           <h3>Current genres: <span id="current-genres"></span></h3>
           <button class="btn btn-aubergine btn-sm" data-toggle="modal" data-target="#genre-select" onclick="getGenresList();">Choose genres</button>
         </div>
+        
+        <span>Current Playback: <span id="current-playback"></span></span>
+        <p style="font-size:12px">
+          Playback is only supported for Spotify Premium users. In Browser Playback is not supported in Safari or on mobile devices.
+        </p>
+        <!-- Playback Setting -->
+        <div class="inline">
+          <h3 class="spacer">Playback</h3>
+          <div class="radio-inline" onclick="setPlaybackSetting(1)">
+            <label>
+              <input type="radio" name="playback-setting" value="1" checked>
+              In Browser
+              <span class="control-indicator"></span>
+            </label>
+          </div>
+          <div class="radio-inline" onclick="setPlaybackSetting(2);">
+            <label>
+              <input type="radio" name="playback-setting" value="2" >
+              In Spotify Client
+              <span class="control-indicator"></span>
+            </label>
+          </div>
+          <div class="radio-inline" onclick="setPlaybackSetting(0)">
+            <label>
+              <input type="radio" name="playback-setting" value="0" >
+              No Playback
+              <span class="control-indicator"></span>
+            </label>
+          </div>
+        </div>
+        
         <div>
           <h5>Mode</h5>
           <div class="checkbox-inline" onclick="getRecommendations();">
@@ -35,15 +74,18 @@
               <span class="control-indicator"></span>
             </label>
           </div>
-          <h5>Popularity</h5><div id="popularity-slider"></div>
+          <h5>Popularity (0-100)</h5><div id="popularity-slider"></div>
           <h5>Tempo (40-200bpm)</h5><div id="tempo-slider"></div>
-          <h5>Valence</h5><div id="valence-slider"></div>
+          <h5>Valence ("positivity" of the track)</h5><div id="valence-slider"></div>
           <h5>Energy</h5><div id="energy-slider"></div>
           <h5>Acousticness</h5><div id="acousticness-slider"></div>
           <h5>Danceability</h5><div id="danceability-slider"></div>
           <h5>Instrumentalness</h5><div id="instrumentalness-slider"></div>
           <h5>Liveness</h5><div id="liveness-slider"></div>
           <h5>Speechiness</h5><div id="speechiness-slider"></div>
+          <h6>
+            Read about what all these audio features mean <a href="https://beta.developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/#audio-features-object">here</a>.
+          </h6>
         </div>
       </div>
       <div id="tracks">
@@ -51,6 +93,8 @@
         <!-- Tracks to be appended here -->
       </div>
     </div>
+    
+    <div class="alert alert-info" role="alert">My source code is on <a href="https://glitch.com/edit/#!/nelson">Glitch!</a></div>
 
     <div class="modal fade" id="genre-select">
       <div class="modal-dialog">
@@ -72,6 +116,25 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-aubergine" data-dismiss="modal" onclick="getRecommendations();">Okay!</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->   
+    
+    <div class="modal fade" id="device-select">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Select a device</h4>
+          </div>
+          <div class="modal-body">
+            <div id="devices-list">
+              <!-- Buttons for each device to be appended here -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-aubergine" data-dismiss="modal">All done!</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
