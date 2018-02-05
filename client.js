@@ -1,3 +1,4 @@
+// Check hash for token
 const hash = window.location.hash
 .substring(1)
 .split('&')
@@ -17,7 +18,7 @@ const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 // Replace with your app's client ID, redirect URI and desired scopes
 const clientId = '593219e3509a40e499f266c2c4fd6f5c';
-const redirectUri = 'http://localhost:8888/';
+const redirectUri = 'https://nelson.glitch.me/';
 const scopes = [
   'streaming',
   'user-read-birthdate',
@@ -32,11 +33,17 @@ if (!_token) {
   window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token`;
 }
 
+let deviceId;
+let playbackSetting;
+
+// Page setup
 genreLimitAlert("off");
 setUpSliders();
+showUser();
+getDevices();
+setPlaybackSetting(1);
 
-let deviceId;
-
+// Initialise Web Playback SDK
 function onSpotifyPlayerAPIReady() {
   
   let player = new Spotify.Player({
@@ -47,16 +54,16 @@ function onSpotifyPlayerAPIReady() {
     volume: 0.8
   });
 
-  console.log(player._options.name)
-
   player.on('ready', function(data) {
     deviceId = data.device_id;
+    localStorage.setItem('nelsonBrowserDeviceID', data.device_id);
   });
 
   player.on('player_state_changed', function(data) {
-    let currentTrack = data.track_window.current_track.uri;
-    console.log(currentTrack)
-    updateCurrentlyPlaying(currentTrack);
+    if(data) {
+      let currentTrack = data.track_window.current_track.uri;
+      updateCurrentlyPlaying(currentTrack);
+    }  
   });
 
   player.connect();
@@ -110,6 +117,53 @@ function setUpSliders() {
     stop: function() {
       getRecommendations()
     }
+  });
+}
+
+function showUser() {
+  $.get('/user?token=' + _token, function(user) {
+    $('#current-user').text(user.id);
+  });
+}
+
+function logout() {
+  _token = null;
+  window.open('https://accounts.spotify.com/logout');
+  location.reload();
+}
+
+function setPlaybackSetting(setting) {
+  playbackSetting = setting;
+  
+  if (setting == 0) {
+    deviceId = null;
+    pause();
+    $('#current-playback').text('None');
+  }
+  
+  if (setting == 1) {
+    setDevice(localStorage.getItem('nelsonBrowserDeviceID'));
+    $('#current-playback').text('In Browser');
+  }
+  
+  if (setting == 2) {
+    $('#device-select').modal('show');
+  }
+}
+
+function setDevice(id, name) {
+  deviceId = id;
+  $('#current-playback').text(name);
+  $.post('/transfer?device_id=' + deviceId + '&token=' + _token);
+}
+
+function getDevices() { 
+  $('#devices-list').empty();
+  $.get('/devices?token=' + _token, function(devices) {
+    devices.forEach(function(device) {
+      let deviceRadioElement = '<div class="radio" onclick="setDevice(\'' + device.id + '\',\'' + device.name + '\')"><label><input type="radio" name="device">' + device.name + '<span class="control-indicator"></span></label></div>';
+      $('#devices-list').append(deviceRadioElement);
+    });
   });
 }
 
@@ -242,16 +296,21 @@ function getRecommendations() {
     let trackIds = [];
     let trackUris = [];
     if(data.tracks) {
-      data.tracks.forEach(function(track) {
-        trackIds.push(track.id);
-        trackUris.push(track.uri);
-      });
-      localStorage.setItem('currentNelsonTracks', trackUris.join());
-      renderTracks(trackIds);
-      play(trackUris.join());
+      if(data.tracks.length > 0) {
+        data.tracks.forEach(function(track) {
+          trackIds.push(track.id);
+          trackUris.push(track.uri);
+        });
+        localStorage.setItem('currentNelsonTracks', trackUris.join());
+        renderTracks(trackIds);
+        play(trackUris.join());
+      }
+      else {
+        $('#tracks').append('<h2>No results. Try a broader search.</h2>')
+      }
     }
     else {
-      $('#tracks').append('<h2>No results.</h2>')
+      $('#tracks').append('<h2>No results. Select some genres first.</h2>')
     }
   });
 }
@@ -260,7 +319,7 @@ function renderTracks(ids) {
   $.get('/tracks?ids=' + ids.join() + '&token=' + _token, function(tracks) {
     tracks.forEach(function(track) {
       let image = track.album.images ? track.album.images[0].url : 'https://upload.wikimedia.org/wikipedia/commons/3/3c/No-album-art.png';
-      let trackElement = '<div class="track-element" id="' + track.uri + '" onclick="play(\'' + track.uri + '\');"><div><img class="album-art" src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div><img class="remove-icon" src="./images/remove-icon.png" onclick="remove(\'' + track.uri + '\');"/></div>';
+      let trackElement = '<div class="track-element" id="' + track.uri + '" onclick="play(\'' + track.uri + '\');"><div><img class="album-art" src="' + image + '"/><div><a href="https://open.spotify.com/track/' + track.id + '">' + track.name + '</a><p>' + track.artists[0].name + '</p></div></div><img class="remove-icon" src="https://cdn.glitch.com/9641d2b3-59eb-408e-ab02-0b9bbd49b069%2Fremove-icon.png?1508341583541" onclick="remove(\'' + track.uri + '\');"/></div>';
       $('#tracks').append(trackElement);
     })
   });
@@ -281,11 +340,16 @@ function makePlaylist() {
 }
 
 function play(track) {
-  $.post('/play?tracks=' + track + '&device_id=' + deviceId + '&token=' + _token);
+  if(playbackSetting != 0) {
+    $.post('/play?tracks=' + track + '&device_id=' + deviceId + '&token=' + _token);
+  }
+}
+
+function pause() {
+  $.post('/pause?token=' + _token);
 }
 
 function remove(track) {
-  console.log("remove")
   let trackList = localStorage.getItem('currentNelsonTracks').split(',');
   trackList = trackList.filter(item => item != track);
   localStorage.setItem('currentNelsonTracks', trackList.join());
@@ -294,3 +358,4 @@ function remove(track) {
   element.outerHTML = "";
   delete element;
 }
+
