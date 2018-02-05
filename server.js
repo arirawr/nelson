@@ -8,6 +8,60 @@ const spotifyBaseUrl = 'https://api.spotify.com/v1/';
 
 app.use(express.static(__dirname + '/'));
 
+app.get('/user', function(req, res) {
+
+  let token = req.query.token;
+
+  let requestURL = spotifyBaseUrl + 'me';
+
+  let options = {
+    url: requestURL,
+    headers: { 'Authorization': 'Bearer ' + token },
+    json: true
+  };
+
+  request.get(options, function(error, response, body) {
+    res.json(body);
+  });
+});
+
+app.get('/devices', function(req, res) {
+
+  let token = req.query.token;
+
+  let requestURL = spotifyBaseUrl + 'me/player/devices';
+
+  let options = {
+    url: requestURL,
+    headers: { 'Authorization': 'Bearer ' + token },
+    json: true
+  };
+
+  request.get(options, function(error, response, body) {
+    res.send(body.devices);
+  });
+});
+
+app.post('/transfer', function(req, res) { 
+
+  let device_id = req.query.device_id;
+  let token = req.query.token;
+
+  let requestURL = spotifyBaseUrl + 'me/player';
+  
+  let options = {
+    url: requestURL,
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    json: true,
+    dataType: 'json',
+    body: { "device_ids": [device_id] }
+  };
+  
+  request.put(options, function(error, response, body) {
+    res.sendStatus(200);
+  });
+});
+
 app.get('/genres', function(req, res) {
 
   let token = req.query.token;
@@ -140,6 +194,23 @@ app.post('/play', function(req, res) {
     json: true,
     dataType: 'json',
     body: { "uris": tracks.split(',') }
+  };
+
+  request.put(options, function(error, response, body) {
+    res.sendStatus(200);
+  });
+});
+
+app.post('/pause', function(req, res) {
+  let token = req.query.token;
+
+  let requestURL = spotifyBaseUrl + 'me/player/pause';
+
+  let options = {
+    url: requestURL,
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    json: true,
+    dataType: 'json',
   };
 
   request.put(options, function(error, response, body) {
